@@ -1,3 +1,6 @@
+import os
+os.environ["HF_HUB_ENABLE_HF_TRANSFER"]='1'
+from huggingface_hub import snapshot_download
 from transformers import AutoProcessor, PaliGemmaForConditionalGeneration
 from PIL import Image
 import requests
@@ -8,6 +11,7 @@ class InferlessPythonModel:
         model_id = "google/paligemma-3b-mix-224"
         device = "cuda:0"
         dtype = torch.bfloat16
+        snapshot_download(repo_id=model_id,allow_patterns=["*.safetensors"],revision="bfloat16")
         self.model = PaliGemmaForConditionalGeneration.from_pretrained(model_id,torch_dtype=dtype,device_map=device,revision="bfloat16").eval()
         self.processor = AutoProcessor.from_pretrained(model_id)
 
